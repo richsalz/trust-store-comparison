@@ -1,0 +1,51 @@
+#! /bin/bash
+
+redigest() {
+    sha=$(openssl x509 -fingerprint -sha256 -noout <$1)
+    sha=$(echo $sha | sed -e s/.*Fingerprint=// -e s/://g)
+    openssl x509 -text <$1 >$sha
+    rm $1
+}
+
+# Write out akamai-permissive set
+scp -q lsg-west.akamai.com:/a/tools/metadata/ghostdir.ca.list/global_server.xml .
+rm -rf certs.akamai
+mkdir certs.akamai
+cd certs.akamai
+../split-permissive.py ../global_server.xml
+for CERT in * ; do
+    redigest $CERT
+done
+echo Permissive-set has $(ls | wc -l)
+cd ..
+
+rm -rf certs.aka-gs
+mkdir certs.aka-gs
+cd certs.aka-gs
+../split-gs.py ../global_server.xml
+for CERT in * ; do
+    redigest $CERT
+done
+echo Global-server has $(ls | wc -l)
+cd ..
+
+exit
+
+rm -rf trust_stores_as_pem*
+wget -q https://nabla-c0d3.github.io/trust_stores_observatory/trust_stores_as_pem.tar.gz
+mkdir trust_stores_as_pem
+cd trust_stores_as_pem
+tar zxf ../trust_stores_as_pem.tar.gz
+cd ..
+
+for WHO in apple google microsoft mozilla ; do
+    rm -rf certs.$WHO
+    mkdir certs.$WHO
+    cd certs.$WHO
+    ../split-pem.pl <../trust_stores_as_pem/${WHO}*.pem
+    for CERT in * ; do
+	redigest $CERT
+    done
+    echo $WHO has $(ls |wc -l)
+    cd ..
+done
