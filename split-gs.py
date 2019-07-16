@@ -33,7 +33,6 @@ def filterout(n):
         # Write cert to file
         sha = m[4:s].lower()
         sha = sha[1:]
-        print n.getAttribute("name"), "removing", sha
         skiplist.append(sha)
 
 def parse(fname):
@@ -68,7 +67,6 @@ def parse(fname):
             slash = sha.find("/")
             if slash != -1:
                 sha = sha[:slash]
-            print "adding", sha
             certsbysha[sha] = cert
     # Print all certs that weren't elided
     for sha in certsbysha:

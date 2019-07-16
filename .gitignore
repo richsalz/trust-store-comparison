@@ -1,9 +1,4 @@
-certs.akamai
-certs.apple
-certs.global
-certs.google
-certs.microsoft
-certs.mozilla
+certs.*
 global_server.xml
 last
 trust_stores_as_pem

@@ -7,7 +7,7 @@ redigest() {
     rm $1
 }
 
-# Write out akamai-permissive set
+# Write out akamai-permissive set, akamai not-in-any-set
 scp -q lsg-west.akamai.com:/a/tools/metadata/ghostdir.ca.list/global_server.xml .
 rm -rf certs.akamai
 mkdir certs.akamai
@@ -28,8 +28,6 @@ for CERT in * ; do
 done
 echo Global-server has $(ls | wc -l)
 cd ..
-
-exit
 
 rm -rf trust_stores_as_pem*
 wget -q https://nabla-c0d3.github.io/trust_stores_observatory/trust_stores_as_pem.tar.gz
