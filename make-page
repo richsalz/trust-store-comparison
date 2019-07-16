@@ -1,0 +1,69 @@
+#! /bin/bash
+
+CW="5%"
+exec >index.html
+
+# Make a single list of certs
+rm -rf all
+mkdir all
+for I in certs.* ; do
+    case $I in
+    certs.aka-gs) ;;
+    *) cp -n $I/* all ;;
+    esac
+done
+
+cat <<EOF
+<html>
+  <head>
+    <title>Trust store comparison</title>
+    <script src="jquery.min.js"></script>
+    <script src="jquery.tablesorter.min.js"></script>
+    <script>\$(function() { \$("#myTable").tablesorter();})</script>
+  </head>
+
+  <body>
+    <h1>Trust Store Comparison</h1>
+    <p>This page generated at $(date); summary of changes
+    at end of page.</p>
+    <p>Click on a column header to sort by that column.
+    Double-Click to reverse-sort.</p>
+    <table id="myTable" class="tablesorter" border='1'>
+      <thead>
+        <tr>
+          <th>Issuer<br>&#8597; ($(ls all | wc -l))</th>
+EOF
+
+for I in certs.* ; do
+  WHO=$(echo $I | sed -e s/certs.//)
+  echo "          <th>$WHO<br>&#8597; ($(ls $I | wc -l))</th>"
+done
+echo "          <th>#<br>&#8597; </th>"
+echo "        </tr>"
+echo "      </thead>"
+echo
+echo "      </tbody>"
+
+CRTSH="https://crt.sh?q="
+ls all | while read FILE ; do
+    echo "        <tr>"
+    ISS=$(grep Issuer all/$FILE | sed -e 's/.*Issuer: //')
+    COUNT=0
+    echo "          <td><a = target=\"_blank\" href=\"$CRTSH$FILE\">$ISS</a></td>"
+    for C in certs.* ; do
+        VAL="-"
+        if test -f $C/$FILE ; then
+            VAL="Y"
+            : $((COUNT++))
+        fi
+        echo "          <td width=\"$CW\">$VAL</td>"
+    done
+    echo "          <td width=\"$CW\">$COUNT</td>"
+    echo "        </tr>"
+done
+
+echo "    </table>"
+echo "  </body>"
+echo "</html>"
+
+rm -rf all
