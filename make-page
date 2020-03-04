@@ -24,8 +24,7 @@ cat <<EOF
 
   <body>
     <h1>Trust Store Comparison</h1>
-    <p>This page generated at $(date); summary of changes
-    at end of page.</p>
+    <p>This page generated at $(date).</p>
     <p>Click on a column header to sort by that column.
     Double-Click to reverse-sort.</p>
     <table id="myTable" class="tablesorter" border='1'>
