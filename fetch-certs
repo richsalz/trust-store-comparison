@@ -1,4 +1,5 @@
 #! /bin/bash
+LSG=lsg-east.akamai.com
 
 redigest() {
     sha=$(openssl x509 -fingerprint -sha256 -noout <$1)
@@ -8,7 +9,7 @@ redigest() {
 }
 
 # Write out akamai-permissive set, akamai not-in-any-set
-scp -q lsg-west.akamai.com:/a/tools/metadata/ghostdir.ca.list/global_server.xml .
+scp -q ${LSG}:/a/tools/metadata/ghostdir.ca.list/global_server.xml .
 rm -rf certs.akamai
 mkdir certs.akamai
 cd certs.akamai
