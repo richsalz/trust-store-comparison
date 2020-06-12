@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 """
-python cacheck.py file...
+python split-permissive.py file...
 
-Syntax-check CA config files.  
+Read files, find contents of security:calist/server-set@akamai-permissive
+and write out all certs.
 
 Looks for common syntax errors, bad XML, and expired certificates.
 """
