@@ -1,0 +1,38 @@
+#! /bin/bash
+
+CW="5%"
+exec >missing-certs.html
+
+# Make a single list of certs
+rm -rf all
+mkdir all
+for I in certs.* ; do
+    case $I in
+    certs.aka-gs) ;;
+    *) cp -n $I/* all ;;
+    esac
+done
+
+cat <<EOF
+<html>
+  <head>
+    <title>Missing from Akamai permissive-set</title>
+  </head>
+
+  <body>
+    <h1>Missing from Akamai permissive-set</h1>
+    <p>This page generated at $(date).</p>
+    <ul>
+EOF
+
+CRTSH="https://crt.sh?q="
+./akamai-missing | while read FILE ; do
+    ISS=$(grep Issuer all/$FILE | sed -e 's/.*Issuer: //')
+    COUNT=0
+    echo "     <li><a = target=\"_blank\" href=\"$CRTSH$FILE\">$ISS</a></li>"
+done
+
+echo "  </ul>"
+echo "</html>"
+
+rm -rf all
