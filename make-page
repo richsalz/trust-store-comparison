@@ -24,7 +24,9 @@ cat <<EOF
 
   <body>
     <h1>Trust Store Comparison</h1>
-    <p>This page generated at $(date).</p>
+    <p>This page generated at $(date) from scripts at
+    <a href="https://git.source.akamai.com/users/rsalz/repos/trust-store-comparison/browse">https://git.source.akamai.com/users/rsalz/repos/trust-store-comparison/browse</a>.
+    </p>
     <p>Click on a column header to sort by that column.
     Double-Click to reverse-sort.</p>
     <table id="myTable" class="tablesorter" border='1'>
