@@ -25,12 +25,14 @@ cat <<EOF
     <ul>
 EOF
 
-CRTSH="https://crt.sh?q="
-./akamai-missing | while read FILE ; do
-    ISS=$(grep Issuer all/$FILE | sed -e 's/.*Issuer: //')
-    COUNT=0
-    echo "     <li><a = target=\"_blank\" href=\"$CRTSH$FILE\">$ISS</a></li>"
-done
+( 
+    CRTSH="https://crt.sh?q="
+    ./akamai-missing | while read FILE ; do
+	ISS=$(grep Issuer all/$FILE | sed -e 's/.*Issuer: //')
+	COUNT=0
+	echo "     <li><a target=\"_blank\" href=\"$CRTSH$FILE\">$ISS</a></li>"
+    done
+) | sort '-t>' -k 3
 
 echo "  </ul>"
 echo "</html>"
