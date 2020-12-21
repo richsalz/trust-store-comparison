@@ -1,7 +1,7 @@
 #! /bin/bash
 
 for I in $(ls certs.mozilla) ; do
-    if test -f certs.apple/$I -a -f certs.google/$I -a -f certs.microsoft/$I -a ! -f certs.aka-gs/$I ; then
+    if test -f certs.apple/$I -a -f certs.google/$I -a -f certs.microsoft/$I -a ! -f certs.akamai/$I ; then
 	echo $I
     fi
 done 
