@@ -8,7 +8,7 @@ rm -rf all
 mkdir all
 for I in certs.* ; do
     case $I in
-    certs.aka-gs) ;;
+    certs.akamai) ;;
     *) cp -n $I/* all ;;
     esac
 done

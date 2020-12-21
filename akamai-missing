@@ -1,7 +1,15 @@
 #! /bin/bash
 
-for I in $(ls certs.mozilla) ; do
-    if test -f certs.apple/$I -a -f certs.google/$I -a -f certs.microsoft/$I -a ! -f certs.akamai/$I ; then
+(
+    for D in certs.* ; do
+	ls $D
+    done
+) | sort -u | while read I ; do
+    if test -f certs.apple/$I \
+	-a -f certs.google/$I \
+	-a -f certs.gtrust/$I \
+	-a -f certs.microsoft/$I \
+	-a ! -f certs.akamai/$I ; then
 	echo $I
     fi
 done 
