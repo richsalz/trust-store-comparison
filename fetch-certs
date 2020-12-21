@@ -8,6 +8,8 @@ redigest() {
     rm $1
 }
 
+which tidy >/dev/null || { echo 'Need tidy installed' ; exit 1 ; }
+
 # Write out akamai-permissive set, akamai not-in-any-set
 scp -q ${LSG}:/a/tools/metadata/ghostdir.ca.list/global_server.xml .
 rm -rf certs.akamai
@@ -48,3 +50,18 @@ for WHO in apple google microsoft mozilla ; do
     echo $WHO has $(ls |wc -l)
     cd ..
 done
+
+
+# Scrape the Chrome root store.  Sigh :(
+# Also understands the output of tidy.  Double sigh.
+# Wish I could get "export as CSV" working.
+rm -rf certs.gtrust
+mkdir certs.gtrust
+wget -O- -q https://g.co/chrome/root-store \
+    | tidy -q 2>/dev/null \
+    | perl -n -e 'print $1, "\n" if /^([0-9A-f]{64})<.td>$/;' | while read FILE ; do
+    # Multiple files will be identical, so okay to overwrite.
+    # If file doesn't exist, an error will print.
+    cp certs.*/$FILE certs.gtrust
+done
+echo Chrome root store has $(ls certs.gtrust | wc -l)
