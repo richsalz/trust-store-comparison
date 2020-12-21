@@ -29,6 +29,10 @@ cat <<EOF
     </p>
     <p>Click on a column header to sort by that column.
     Double-Click to reverse-sort.</p>
+
+    <p>Google is from the Android Open Source Project, and gtrust is for
+    the new Google trust store.<p>
+
     <table id="myTable" class="tablesorter" border='1'>
       <thead>
         <tr>
