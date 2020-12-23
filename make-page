@@ -28,10 +28,16 @@ cat <<EOF
     <a href="https://git.source.akamai.com/users/rsalz/repos/trust-store-comparison/browse">https://git.source.akamai.com/users/rsalz/repos/trust-store-comparison/browse</a>.
     </p>
     <p>Click on a column header to sort by that column.
-    Double-Click to reverse-sort.</p>
-
-    <p>Google is from the Android Open Source Project, and gtrust is for
-    the new Google trust store.<p>
+    Double-Click to reverse-sort. Column headings:</p>
+    <ul>
+          <li>aka-gs - All certs in global-server.xml not in a set</li>
+          <li>akamai - The "permissive set"</li>
+          <li>apple - Apple's trust store</li>
+          <li>google - from the Android Open Source Project</li>
+          <li>gtrust - the new Chrome trust store</li>
+          <li>microsoft - Microsoft's trust store</li>
+          <li>mozilla - Firefox's trust store</li>
+    </ul>
 
     <table id="myTable" class="tablesorter" border='1'>
       <thead>
