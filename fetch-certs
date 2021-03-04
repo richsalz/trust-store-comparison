@@ -33,7 +33,7 @@ echo Global-server has $(ls | wc -l)
 cd ..
 
 rm -rf trust_stores_as_pem*
-wget -q https://nabla-c0d3.github.io/trust_stores_observatory/trust_stores_as_pem.tar.gz
+curl --silent --show-error --remote-name https://nabla-c0d3.github.io/trust_stores_observatory/trust_stores_as_pem.tar.gz
 mkdir trust_stores_as_pem
 cd trust_stores_as_pem
 tar zxf ../trust_stores_as_pem.tar.gz
@@ -57,7 +57,7 @@ done
 # Wish I could get "export as CSV" working.
 rm -rf certs.gtrust
 mkdir certs.gtrust
-wget -O- -q https://g.co/chrome/root-store \
+curl --silent --show-error https://g.co/chrome/root-store \
     | tidy -q 2>/dev/null \
     | perl -n -e 'print $1, "\n" if /^([0-9A-f]{64})<.td>$/;' | while read FILE ; do
     # Multiple files will be identical, so okay to overwrite.
