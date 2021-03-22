@@ -11,7 +11,7 @@ redigest() {
 which tidy >/dev/null || { echo 'Need tidy installed' ; exit 1 ; }
 
 # Write out akamai-permissive set, akamai not-in-any-set
-scp -q ${LSG}:/a/tools/metadata/ghostdir.ca.list/global_server.xml .
+scp -pq ${LSG}:/a/tools/metadata/ghostdir.ca.list/global_server.xml . || { echo 'ERROR: failed to fetch global_server.xml.'; exit 1; }
 rm -rf certs.akamai
 mkdir certs.akamai
 cd certs.akamai
