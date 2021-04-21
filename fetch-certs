@@ -57,11 +57,11 @@ done
 # Wish I could get "export as CSV" working.
 rm -rf certs.gtrust
 mkdir certs.gtrust
-curl --silent --show-error https://g.co/chrome/root-store \
+curl --location --silent --show-error https://g.co/chrome/root-store \
     | tidy -q 2>/dev/null \
     | perl -n -e 'print $1, "\n" if /^([0-9A-f]{64})<.td>$/;' | while read FILE ; do
     # Multiple files will be identical, so okay to overwrite.
     # If file doesn't exist, an error will print.
-    cp certs.*/$FILE certs.gtrust
+    cp -f certs.*/$FILE certs.gtrust
 done
 echo Chrome root store has $(ls certs.gtrust | wc -l)
