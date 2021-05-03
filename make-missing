@@ -14,7 +14,8 @@ for I in certs.* ; do
 done
 
 cat <<EOF
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <title>Missing from Akamai permissive-set</title>
   </head>
@@ -25,7 +26,7 @@ cat <<EOF
     <ul>
 EOF
 
-( 
+(
     CRTSH="https://crt.sh?q="
     ./akamai-missing | while read FILE ; do
 	ISS=$(grep Issuer all/$FILE | sed -e 's/.*Issuer: //')
