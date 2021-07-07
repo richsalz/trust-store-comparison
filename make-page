@@ -14,12 +14,33 @@ for I in certs.* ; do
 done
 
 cat <<EOF
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <title>Trust store comparison</title>
     <script src="jquery.min.js"></script>
     <script src="jquery.tablesorter.min.js"></script>
     <script>\$(function() { \$("#myTable").tablesorter();})</script>
+    <style>
+      table {
+        text-align: left;
+        position: relative;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 0.25rem;
+      }
+      tr.heading th {
+        background: grey;
+        color: white;
+      }
+      th {
+        background: white;
+        position: sticky;
+        top: 0; /* Don't forget this, required for the stickiness */
+        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+      }
+    </style>
   </head>
 
   <body>
@@ -34,14 +55,14 @@ cat <<EOF
           <li>akamai - The "permissive set"</li>
           <li>apple - Apple's trust store</li>
           <li>google - from the Android Open Source Project</li>
-          <li>gtrust - the new Chrome trust store</li>
+          <li>gtrust - the new (2021) Chrome trust store</li>
           <li>microsoft - Microsoft's trust store</li>
           <li>mozilla - Firefox's trust store</li>
     </ul>
 
     <table id="myTable" class="tablesorter" border='1'>
       <thead>
-        <tr>
+        <tr class="heading">
           <th>Issuer<br>&#8597; ($(ls all | wc -l))</th>
 EOF
 
@@ -53,14 +74,14 @@ echo "          <th>#<br>&#8597; </th>"
 echo "        </tr>"
 echo "      </thead>"
 echo
-echo "      </tbody>"
+echo "      <tbody>"
 
 CRTSH="https://crt.sh?q="
 ls all | while read FILE ; do
     echo "        <tr>"
     ISS=$(grep Issuer all/$FILE | sed -e 's/.*Issuer: //')
     COUNT=0
-    echo "          <td><a = target=\"_blank\" href=\"$CRTSH$FILE\">$ISS</a></td>"
+    echo "          <td><a target=\"_blank\" href=\"$CRTSH$FILE\">$ISS</a></td>"
     for C in certs.* ; do
         VAL="-"
         if test -f $C/$FILE ; then
@@ -73,6 +94,7 @@ ls all | while read FILE ; do
     echo "        </tr>"
 done
 
+echo "      </tbody>"
 echo "    </table>"
 echo "  </body>"
 echo "</html>"
