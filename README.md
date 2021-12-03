@@ -6,6 +6,9 @@ If you run this script on, say, a Linux host, but want to view the
 generated files somewhere else, make sure to copy `*.html` and `*.js`
 to the other machine.
 
+Also, in Perforce //docs/esp/eng/stability/tools/cacheck has a script
+to check for global_server.xml expirations, etc.
+
 Here's a list of the scripts.
 
 ## fetch-certs
