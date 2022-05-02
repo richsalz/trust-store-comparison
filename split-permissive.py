@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 """
 python split-permissive.py file...
 
@@ -43,10 +43,10 @@ def parse(fname):
     dom = xmlparse(open(fname))
     c = dom.getElementsByTagName(u"configs")
     if len(c) != 1:
-        raise SystemError, "Wrong root element (not configs)"
+        raise SystemError("Wrong root element (not configs)")
     c = c[0].getElementsByTagName(u"edge-config")
     if len(c) != 1:
-        raise SystemError, "Wrong child element (not edge-config)"
+        raise SystemError("Wrong child element (not edge-config)")
 
     # Walk over all calist nodes
     for calist in c[0].getElementsByTagName(u"security:calist"):
@@ -64,7 +64,7 @@ def parse(fname):
             if start == -1:
                 start = cert.find("sha1=")
                 if start == -1:
-                    raise SystemError, "No sha1 line"
+                    raise SystemError("No sha1 line")
             # Skip the sha1, chop the newline and any /foo comment
             sha1 = cert[start + 5:]
             sha1 = sha1[:sha1.find("\n")]
