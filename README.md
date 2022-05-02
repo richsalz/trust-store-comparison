@@ -1,6 +1,6 @@
 # trust-store-comparison
 
-No makefile, nothing to compile.  Just some shell and python scripts.
+No makefile, nothing to compile.  Just some shell and python3 scripts.
 
 If you run this script on, say, a Linux host, but want to view the
 generated files somewhere else, make sure to copy `*.html` and `*.js`
