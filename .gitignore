@@ -5,3 +5,4 @@ trust_stores_as_pem
 trust_stores_as_pem.tar.gz
 index.html
 missing-certs.html
+.*.swp
