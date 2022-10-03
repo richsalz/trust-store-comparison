@@ -16,7 +16,8 @@ Here's a list of the scripts.
 Fetches certs from Apple, Google/Android OpenSource, Google Chromium trust
 store, Microsoft, Mozilla, and Akamai perissive-set and global-server
 contents.  It actually uses a public GitHub repo to get the external certs.
-Each trust store has its own directory.
+Each trust store has its own directory.  Environment variable LSG can
+be set to point to which LSG host to use.
 
 ## make-page
 Generates an HTML page, called `index.html`, that contains the comparisons.

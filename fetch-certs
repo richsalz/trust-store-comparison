@@ -1,5 +1,9 @@
 #! /bin/bash
-LSG=lsg-east.akamai.com
+
+test -z "$LSG" && LSG="lsg-gss3.netmgmt.akamai.com"
+GLOBAL_SERVER=/a/tools/metadata/ghostdir.ca.list/global_server.xml
+STORE_AS_PEM_TGZ=https://nabla-c0d3.github.io/trust_stores_observatory/trust_stores_as_pem.tar.gz
+CHROME_ROOTS_TGZ=https://chromium.googlesource.com/chromium/src/+archive/main/net/data/ssl/chrome_root_store.tar.gz
 
 redigest() {
     sha=$(openssl x509 -fingerprint -sha256 -noout <$1)
@@ -8,10 +12,11 @@ redigest() {
     rm $1
 }
 
-which tidy >/dev/null || { echo 'Need tidy installed' ; exit 1 ; }
-
 # Write out akamai-permissive set, akamai not-in-any-set
-scp -pq ${LSG}:/a/tools/metadata/ghostdir.ca.list/global_server.xml . || { echo 'ERROR: failed to fetch global_server.xml.'; exit 1; }
+if ! scp -pq ${LSG}:${GLOBAL_SERVER} . ; then
+    echo 'ERROR: failed to fetch global_server.xml.'
+    exit 1
+fi
 rm -rf certs.akamai
 mkdir certs.akamai
 cd certs.akamai
@@ -33,7 +38,7 @@ echo Global-server has $(ls | wc -l)
 cd ..
 
 rm -rf trust_stores_as_pem*
-curl --silent --show-error --remote-name https://nabla-c0d3.github.io/trust_stores_observatory/trust_stores_as_pem.tar.gz
+curl --silent --show-error --remote-name $STORE_AS_PEM_TGZ
 mkdir trust_stores_as_pem
 cd trust_stores_as_pem
 tar zxf ../trust_stores_as_pem.tar.gz
@@ -52,16 +57,15 @@ for WHO in apple google microsoft mozilla ; do
 done
 
 
-# Scrape the Chrome root store.  Sigh :(
-# Also understands the output of tidy.  Double sigh.
-# Wish I could get "export as CSV" working.
+# Scrape the Chrome root store.
 rm -rf certs.gtrust
 mkdir certs.gtrust
-curl --location --silent --show-error https://g.co/chrome/root-store \
-    | tidy -q 2>/dev/null \
-    | perl -n -e 'print $1, "\n" if /^([0-9A-f]{64})<.td>$/;' | while read FILE ; do
-    # Multiple files will be identical, so okay to overwrite.
-    # If file doesn't exist, an error will print.
-    cp -f certs.*/$FILE certs.gtrust
+curl --output - --location --silent --show-error $CHROME_ROOTS_TGZ | tar zxf - root_store.certs
+cd certs.gtrust
+../split-pem.pl <../root_store.certs
+for CERT in * ; do
+    redigest $CERT
 done
-echo Chrome root store has $(ls certs.gtrust | wc -l)
+echo Chrome root store has $(ls | wc -l)
+cd ..
+rm root_store.certs
