@@ -2,6 +2,9 @@
 
 No makefile, nothing to compile.  Just some shell and python3 scripts.
 
+*Right now this work on Akamai, and will need some tuning to make it
+work elsewhere.  PR's accepted :) *
+
 If you run this script on, say, a Linux host, but want to view the
 generated files somewhere else, make sure to copy `*.html` and `*.js`
 to the other machine.
