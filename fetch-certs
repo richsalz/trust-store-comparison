@@ -12,7 +12,33 @@ redigest() {
     rm $1
 }
 
-# Write out akamai-permissive set, akamai not-in-any-set
+# Get the CPS repository
+if ! test -d cps-engine-api ; then
+    echo "Cloning cps-engine-api repository"
+    git clone -q ssh://git@git.source.akamai.com:7999/sources/cps-engine-api.git
+else
+    echo "Uopdating cps-engine-api repository"
+    cd cps-engine-api
+    git pull -q
+    cd ..
+fi
+CPSXML=cps-engine-api/cps-engine/config/global_server.xml
+if ! test -f $CPSXML ; then
+    echo File does not exist: $CPSML
+    exit 1
+fi
+
+rm -rf certs.aka-cps
+mkdir certs.aka-cps
+cd certs.aka-cps
+../split-permissive.py ../$CPSXML
+for CERT in * ; do
+    redigest $CERT
+done
+echo CPS has $(ls | wc -l)
+cd ..
+
+# Write out akamai-permissive set
 if ! scp -pq ${LSG}:${GLOBAL_SERVER} . ; then
     echo 'ERROR: failed to fetch global_server.xml.'
     exit 1
@@ -27,6 +53,7 @@ done
 echo Permissive-set has $(ls | wc -l)
 cd ..
 
+# Write out all CAs in global-server file
 rm -rf certs.aka-gs
 mkdir certs.aka-gs
 cd certs.aka-gs
