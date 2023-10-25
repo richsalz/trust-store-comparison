@@ -1,9 +1,10 @@
 #! /bin/bash
 
 test -z "$LSG" && LSG="lsg-gss3.netmgmt.akamai.com"
-GLOBAL_SERVER=/a/tools/metadata/ghostdir.ca.list/global_server.xml
-STORE_AS_PEM_TGZ=https://nabla-c0d3.github.io/trust_stores_observatory/trust_stores_as_pem.tar.gz
-CHROME_ROOTS_TGZ=https://chromium.googlesource.com/chromium/src/+archive/main/net/data/ssl/chrome_root_store.tar.gz
+GLOBAL_SERVER="/a/tools/metadata/ghostdir.ca.list/global_server.xml"
+STORE_AS_PEM_TGZ="https://nabla-c0d3.github.io/trust_stores_observatory/trust_stores_as_pem.tar.gz"
+CHROME_ROOTS_TGZ="https://chromium.googlesource.com/chromium/src/+archive/main/net/data/ssl/chrome_root_store.tar.gz"
+CPS_GIT_SRC="ssh://git@git.source.akamai.com:7999/sources/cps-engine-api.git"
 
 redigest() {
     sha=$(openssl x509 -fingerprint -sha256 -noout <$1)
@@ -15,16 +16,16 @@ redigest() {
 # Get the CPS repository
 if ! test -d cps-engine-api ; then
     echo "Cloning cps-engine-api repository"
-    git clone -q ssh://git@git.source.akamai.com:7999/sources/cps-engine-api.git
+    git clone -q $CPS_GIT_SRC
 else
-    echo "Uopdating cps-engine-api repository"
-    cd cps-engine-api
+    echo "Updating cps-engine-api repository"
+    cd "cps-engine-api"
     git pull -q
     cd ..
 fi
-CPSXML=cps-engine-api/cps-engine/config/global_server.xml
+CPSXML="cps-engine-api/cps-engine/config/global_server.xml"
 if ! test -f $CPSXML ; then
-    echo File does not exist: $CPSML
+    echo File does not exist: $CPSXML
     exit 1
 fi
 
