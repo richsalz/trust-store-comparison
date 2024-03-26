@@ -23,12 +23,14 @@ Each trust store has its own directory.  Environment variable LSG can
 be set to point to which LSG host to use.
 
 ## make-page
+
 Generates an HTML page, called `index.html`, that contains the comparisons.
 That page includes `jquery.min.js` and `jquery.tablesorter.min.js` to do the
 table/column cleverness.  Put all three files in the same directory and point
 your browser there.
 
 ## akamai-missing
+
 A list of what Akamai permissive-set is missing that the all the other
 trust stores have. It outputs a list of the SHA256 digests, which isn't
 friendly, but you can do things like this, to see
@@ -43,5 +45,11 @@ done
 Note that will generate a LOT of output
 
 ## make-missing
+
 Create stand-alone `missing-certs.html` that lists what certs are missing,
 in a format similar to make-page.
+
+## check-ski
+
+A script to check all the certs, in each directory, and see if there
+are any that share the same Subject Key Identifier
