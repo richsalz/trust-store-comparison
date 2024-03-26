@@ -1,4 +1,4 @@
-#! /usr/bin/env perl
+#! /usr/bin/env perl -w
 # Split a file containing multiple PEM certs into multiple files, one
 # cert per file. Files will be tmpXX, tmqXX, etc.
 use strict;
