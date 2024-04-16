@@ -51,8 +51,8 @@ cat <<EOF
     <p>Click on a column header to sort by that column.
     Double-Click to reverse-sort. Column headings:</p>
     <ul>
-      <li>aka-gs - All certs in global-server.xml not in a set</li>
       <li>aka-cps - The "permissive set" from CPS-ENGINE</li>
+      <li>aka-gs - All certs in global-server.xml not in a set</li>
       <li>akamai - The "permissive set"</li>
       <li>apple - Apple's trust store</li>
       <li>google - from the Android Open Source Project</li>
