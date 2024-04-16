@@ -7,9 +7,9 @@ CHROME_ROOTS_TGZ="https://chromium.googlesource.com/chromium/src/+archive/main/n
 CPS_GIT_SRC="ssh://git@git.source.akamai.com:7999/sources/cps-engine-api.git"
 
 redigest() {
-    sha=$(openssl x509 -fingerprint -sha256 -noout <$1)
+    sha=$(openssl x509 -fingerprint -sha256 -noout -in $1)
     sha=$(echo $sha | sed -e s/.*Fingerprint=// -e s/://g)
-    openssl x509 -text <$1 >$sha
+    openssl x509 -text -in $1 >$sha
     rm $1
 }
 
