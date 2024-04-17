@@ -50,7 +50,7 @@ done
 
 Note that will generate a LOT of output
 
-## make-missing
+## make-missing-page
 
 Create stand-alone `missing-certs.html` that lists what certs are missing,
 in a format similar to make-page.
