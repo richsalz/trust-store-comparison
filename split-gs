@@ -2,9 +2,9 @@
 """
 python split-gs file...
 
-Split up a ghost "global-server.xml" file into
-
-Looks for common syntax errors, bad XML, and expired certificates.
+Parse a ghost "global-server.xml" and write out all certs
+(one per file named by their sha1 hash) if they are not
+named in an server-set's.
 """
 
 import sys
