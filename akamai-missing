@@ -1,15 +1,21 @@
-#! /bin/bash
+#! /usr/bin/env perl -w
+use strict;
+use warnings;
 
-(
-    for D in certs.* ; do
-	ls $D
-    done
-) | sort -u | while read I ; do
-    if test -f certs.apple/$I \
-	-a -f certs.google/$I \
-	-a -f certs.gtrust/$I \
-	-a -f certs.microsoft/$I \
-	-a ! -f certs.akamai/$I ; then
-	echo $I
-    fi
-done 
+my %certfiles;
+
+foreach my $DIR ( <certs.*> ) {
+    chdir $DIR || die "Can't chdir $DIR, $!";
+    foreach my $FILE ( <*> ) {
+	$certfiles{$FILE} = 1;
+    }
+    chdir ".." || die "Can't chdir up from $DIR, $!";
+}
+foreach my $FILE ( sort keys %certfiles ) {
+    print "$FILE\n"
+	if -f "certs.apple/$FILE"
+	  && -f "certs.google/$FILE"
+	  && -f "certs.gtrust/$FILE"
+	  && -f "certs.microsoft/$FILE"
+	  && ! -f "certs.akamai/$FILE";
+}
