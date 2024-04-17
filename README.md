@@ -29,6 +29,12 @@ That page includes `jquery.min.js` and `jquery.tablesorter.min.js` to do the
 table/column cleverness.  Put all three files in the same directory and point
 your browser there.
 
+## make-ski-page
+
+Generates an HTML page called `dup-ski.html` (with links to show the certs)
+of certificates that have dupplicate Subject Key Identifier. Prettier output
+than `check-ski`
+
 ## akamai-missing
 
 A list of what Akamai permissive-set is missing that the all the other
@@ -53,3 +59,4 @@ in a format similar to make-page.
 
 A script to check all the certs, in each directory, and see if there
 are any that share the same Subject Key Identifier
+

@@ -1,0 +1,114 @@
+#! /usr/bin/env perl -w
+use strict;
+use warnings;
+
+
+## Open the file, and if a Subject Key Identifier is there, return
+## the next line, else return undef.
+sub
+get_ski()
+{
+    my ( $file ) = pop;
+    open my $fh, '<', $file || die "Can't parse $file, $!";
+    my @lines = <$fh>;
+    close $fh;
+
+    foreach my $idx (0 .. $#lines) {
+	if ( $lines[$idx] =~ /X509v3 Subject Key/ ) {
+	    my $ret = $lines[$idx + 1];
+	    $ret =~ s/[ \t\r\n]//g;
+	    return $ret;
+	}
+    }
+    return undef
+
+}
+
+sub
+get_issuer()
+{
+    my ( $file ) = pop;
+    open my $fh, '<', $file || die "Can't parse $file, $!";
+    my @lines = <$fh>;
+    close $fh;
+
+    foreach my $idx (0 .. $#lines) {
+	if ( $lines[$idx] =~ /Issuer:/ ) {
+	    my $ret = $lines[$idx];
+	    $ret =~ s/Issuer:\s*//;
+	    return $ret;
+	}
+    }
+    return undef
+}
+
+open my $LOG, '>', 'dup-ski.html' || die "Can't open output, $!";
+select $LOG;
+
+my $NOW=`date`;
+print <<EOF;
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Duplicate keys</title>
+  </head>
+
+  <body>
+    <h1>Duplicate keys</h1>
+    <p>This page generated at $NOW from scripts at
+    <a href="https://git.source.akamai.com/users/rsalz/repos/trust-store-comparison/browse">https://git.source.akamai.com/users/rsalz/repos/trust-store-comparison/browse</a>.
+    </p>
+    <ul>
+      <li>aka-cps - The "permissive set" from CPS-ENGINE</li>
+      <li>aka-gs - All certs in global-server.xml not in a set</li>
+      <li>akamai - The "permissive set"</li>
+      <li>apple - Apple's trust store</li>
+      <li>google - from the Android Open Source Project</li>
+      <li>gtrust - the new (2021) Chrome trust store</li>
+      <li>microsoft - Microsoft's trust store</li>
+      <li>mozilla - Firefox's trust store</li>
+    </ul>
+    <ul>
+EOF
+
+# Loop over all cert directories, scanning every file in each dir
+my $CRTSH = "https://crt.sh?q=";
+foreach my $dir ( <certs.*> ) {
+    chdir $dir || die "Can't chdir $dir, $!";
+
+    my $simple = $dir;
+    $simple =~ s/certs.//;
+    print "\n  <h2>$simple</h2>\n";
+    print "<ul>\n";
+
+    my %seen = ();
+    my $clean = 1;
+    foreach my $file ( <*> ) {
+	my $ski = &get_ski($file);
+	next if not defined $ski;
+	my $match = $seen{$ski};
+	if ( defined $match ) {
+	    $clean = 0;
+	    my $link = "<a target='_blank' href='${CRTSH}${file}'>";
+	    print "    <li>\n    ${link}$file</a><br>\n";
+	    $link = "<a target='_blank' href='${CRTSH}${match}'>";
+	    print "      ${link}$match</a><br>\n";
+	    print "<p>&nbsp;</p></li>\n\n";
+	} else {
+	    $seen{$ski} = $file;
+	}
+    }
+    print "    <bold>None found</bold>\n" if $clean;
+    print "</ul>\n";
+
+    chdir ".." || die "Can't chdir from $dir, $!";
+}
+
+print <<EOF;
+
+  </body>
+</html>
+EOF
+
+select STDOUT;
+exit 0;
