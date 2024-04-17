@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 """
-python cacheck.py file...
+python split-gs file...
 
-Syntax-check CA config files.  
+Split up a ghost "global-server.xml" file into
 
 Looks for common syntax errors, bad XML, and expired certificates.
 """
@@ -11,6 +11,7 @@ import sys
 from xml.dom.minidom import parse as xmlparse
 
 certsbysha = dict()
+# Array of certs that should be skipped
 skiplist = []
 
 def kids(node, nodetype):
@@ -18,19 +19,19 @@ def kids(node, nodetype):
     return [n for n in node.childNodes if n.nodeType == nodetype]
 
 def get_text(n):
-    '''Glue all the text children of |n| together, strip leading and
-    trailing whitespace, return a single text string.'''
+    """Glue all the text children of |n| together, strip leading and
+    trailing whitespace, return a single text string."""
     text = "".join([tn.wholeText for tn in kids(n, n.TEXT_NODE)])
     return "\n".join([str(l).lstrip() for l in text.split("\n")])
 
 def filterout(n):
-    """Take the server-set starting at node |n| and write out all
-    certs in that set."""
+    """Take the server-set starting at node |n| and add all certs
+    in that set to the skiplist."""
     # Get all non-blank lines.
     members = [m for m in get_text(n).split("\n") if len(m) > 0]
     for m in members:
+        # Turn "Fa:bC.../..." into "fa:bc..." and append to the skip list.
         s = m.find("/")
-        # Write cert to file
         sha = m[4:s].lower()
         sha = sha[1:]
         skiplist.append(sha)

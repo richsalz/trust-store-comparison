@@ -58,7 +58,7 @@ cd ..
 rm -rf certs.aka-gs
 mkdir certs.aka-gs
 cd certs.aka-gs
-../split-gs.py ../global_server.xml
+../split-gs ../global_server.xml
 for CERT in * ; do
     redigest $CERT
 done
