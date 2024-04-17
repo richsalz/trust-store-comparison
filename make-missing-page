@@ -1,6 +1,5 @@
 #! /bin/bash
 
-CW="5%"
 exec >missing-certs.html
 
 # Make a single list of certs
