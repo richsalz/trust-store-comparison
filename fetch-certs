@@ -76,7 +76,7 @@ for WHO in apple google microsoft mozilla ; do
     rm -rf certs.$WHO
     mkdir certs.$WHO
     cd certs.$WHO
-    ../split-pem.pl <../trust_stores_as_pem/${WHO}*.pem
+    ../split-pem <../trust_stores_as_pem/${WHO}*.pem
     for CERT in * ; do
 	redigest $CERT
     done
@@ -90,7 +90,7 @@ rm -rf certs.gtrust
 mkdir certs.gtrust
 curl --output - --location --silent --show-error $CHROME_ROOTS_TGZ | tar zxf - root_store.certs
 cd certs.gtrust
-../split-pem.pl <../root_store.certs
+../split-pem <../root_store.certs
 for CERT in * ; do
     redigest $CERT
 done
