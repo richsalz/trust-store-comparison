@@ -32,7 +32,7 @@ fi
 rm -rf certs.aka-cps
 mkdir certs.aka-cps
 cd certs.aka-cps
-../split-permissive.py ../$CPSXML
+../split-permissive ../$CPSXML
 for CERT in * ; do
     redigest $CERT
 done
@@ -47,7 +47,7 @@ fi
 rm -rf certs.akamai
 mkdir certs.akamai
 cd certs.akamai
-../split-permissive.py ../global_server.xml
+../split-permissive ../global_server.xml
 for CERT in * ; do
     redigest $CERT
 done
