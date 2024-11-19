@@ -1,0 +1,29 @@
+#! /bin/bash
+
+(
+echo "# Certificates in Akamai's trust store"
+echo
+echo "- This is known internally as the 'permissive-set' for historical reasons."
+echo - Last updated: $(date).
+echo - There are $(ls certs.akamai | wc -l) entries.
+echo
+echo Links below point to the \`https://crt.sh\` service.
+echo
+) >akamai-trust-store.md
+
+CRTSH="https://crt.sh?q="
+
+ls certs.akamai | while read FILE ; do
+    ISS=$(grep Issuer certs.akamai/$FILE | sed -e 's/.*Issuer: //')
+    echo "- ${ISS}  "
+    echo "${CRTSH}${FILE}"
+    #echo "[${ISS}](${CRTSH}${FILE})"
+    echo
+done >>akamai-trust-store.md
+
+test -d ../trust-store || exit 0
+
+cp akamai-trust-store.md ../trust-store/.
+cd ../trust-store
+git commit -m "Automatic update" akamai-trust-store.md
+git push

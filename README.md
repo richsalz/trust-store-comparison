@@ -30,6 +30,12 @@ That page includes `jquery.min.js` and `jquery.tablesorter.min.js` to do the
 table/column cleverness.  Put all three files in the same directory and point
 your browser there.
 
+## make-github-page
+
+Makes a listing of the Akamai permissive-set (a/k/a our global Trust Store)
+in markdown format.  If you have a ../trust-store repository exists, it
+will copy the file over, check it in, and push it to GitHub.
+
 ## make-ski-page
 
 Generates an HTML page called `dup-ski.html` (with links to show the certs)
