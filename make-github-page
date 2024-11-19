@@ -6,8 +6,10 @@ echo
 echo "- This is known internally as the 'permissive-set' for historical reasons."
 echo - Last updated: $(date).
 echo - There are $(ls certs.akamai | wc -l) entries.
+echo - Certs below are listed in order of their digest value\;
+echo we know this is not incredibly useful.
 echo
-echo Links below point to the \`https://crt.sh\` service.
+echo Links below point to the full certificate on \`https://crt.sh\`.
 echo
 ) >akamai-trust-store.md
 
