@@ -1,9 +1,11 @@
 #! /bin/bash
 
+OUT=akamai-trust-store.md
+REPO=akamai-certificate-store
+
 (
-echo "# Certificates in Akamai's trust store"
+echo "# Akamai's Certificate Store"
 echo
-echo "- This is known internally as the 'permissive-set' for historical reasons."
 echo - Last updated: $(date).
 echo - There are $(ls certs.akamai | wc -l) entries.
 echo - Certs below are listed in order of their digest value\;
@@ -11,21 +13,29 @@ echo we know this is not incredibly useful.
 echo
 echo Links below point to the full certificate on \`https://crt.sh\`.
 echo
-) >akamai-trust-store.md
+) >$OUT
 
 CRTSH="https://crt.sh?q="
 
 ls certs.akamai | while read FILE ; do
-    ISS=$(grep Issuer certs.akamai/$FILE | sed -e 's/.*Issuer: //')
-    echo "- ${ISS}  "
-    echo "${CRTSH}${FILE}"
-    #echo "[${ISS}](${CRTSH}${FILE})"
+    # Can't just use "grep" because it gets too much
+    openssl x509 -noout -subject -serial -enddate -fingerprint <certs.akamai/$FILE >/tmp/mgh$$
+    NAME=$(sed -n -e 's/subject=//p' /tmp/mgh$$)
+    SERIAL=$(sed -n -e 's/serial=//p' /tmp/mgh$$)
+    EXPIRES=$(sed -n -e 's/notAfter=//p' /tmp/mgh$$)
+    FPRINT=$(sed -n -e 's/SHA1 Fingerprint=//p' /tmp/mgh$$)
+    rm /tmp/mgh$$
+    echo "- Name: ${NAME}  "
+    echo "  Fingerprint: ${FPRINT}  "
+    echo "  Serial:  ${SERIAL}  "
+    echo "  Expires:  ${EXPIRES}  "
+    echo "  ${CRTSH}${FILE}"
     echo
-done >>akamai-trust-store.md
+done >>$OUT
 
-test -d ../trust-store || exit 0
+test -d ../$REPO || exit 0
 
-cp akamai-trust-store.md ../trust-store/.
-cd ../trust-store
-git commit -m "Automatic update" akamai-trust-store.md
+cp $OUT ../$REPO/.
+cd ../$REPO
+git commit -m "Automatic update" $OUT
 git push

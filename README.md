@@ -33,8 +33,8 @@ your browser there.
 ## make-github-page
 
 Makes a listing of the Akamai permissive-set (a/k/a our global Trust Store)
-in markdown format.  If you have a ../trust-store repository exists, it
-will copy the file over, check it in, and push it to GitHub.
+in markdown format.  If you have the ../akamai-certificate-store repository
+exists, it will copy the file over, check it in, and push it to GitHub.
 
 ## make-ski-page
 
