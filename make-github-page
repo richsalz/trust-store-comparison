@@ -1,6 +1,6 @@
 #! /bin/bash
 
-OUT=akamai-trust-store.md
+OUT=akamai-certificate-store.md
 REPO=akamai-certificate-store
 
 (
@@ -33,7 +33,16 @@ ls certs.akamai | while read FILE ; do
     echo
 done >>$OUT
 
-test -d ../$REPO || exit 0
+if [ ! -d ../$REPO ] ; then
+    echo "../$REPO does not exist -- update manually" 1>&2
+    exit 1
+fi
+
+# File includes the date so this is not useful
+#if cmp -s $OUT ../$REPO/$OUT ; then
+#    echo "No change"
+#    exit 0
+#fi
 
 cp $OUT ../$REPO/.
 cd ../$REPO
