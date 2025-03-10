@@ -36,6 +36,12 @@ Makes a listing of the Akamai permissive-set (a/k/a our global Trust Store)
 in markdown format.  If you have the ../akamai-certificate-store repository
 exists, it will copy the file over, check it in, and push it to GitHub.
 
+## check-ski
+
+A script to check all the certs, in each directory, and see if there
+are any that share the same Subject Key Identifier
+
+
 ## make-ski-page
 
 Generates an HTML page called `dup-ski.html` (with links to show the certs)
@@ -60,10 +66,15 @@ Note that will generate a LOT of output
 ## make-missing-page
 
 Create stand-alone `missing-certs.html` that lists what certs are missing,
-in a format similar to make-page.
+in a format similar to `make-page`.
 
-## check-ski
+## akamai-deleted
 
-A script to check all the certs, in each directory, and see if there
-are any that share the same Subject Key Identifier
+A list of certs in the Akamai permissive-set that are not present in the
+major trust stores. It outputs a list of the SH256 digest. A handful of
+CAs are "grandfathered" in, and are not output.
 
+## make-deleted-page
+
+Createa a stand-alone `deleted-certs.html` page that lists the certs we
+should remove, in a format similar to `make-page`.

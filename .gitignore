@@ -1,11 +1,8 @@
 certs.*
+*.html
+.*.swp
 global_server.xml
-last
 trust_stores_as_pem
 trust_stores_as_pem.tar.gz
-index.html
-dup-ski.html
-missing-certs.html
-.*.swp
 cps-engine-api
 akamai-certificate-store.md
