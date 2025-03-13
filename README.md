@@ -68,13 +68,13 @@ Note that will generate a LOT of output
 Create stand-alone `missing-certs.html` that lists what certs are missing,
 in a format similar to `make-page`.
 
-## akamai-deleted
+## akamai-deleted [-all]
 
 A list of certs in the Akamai permissive-set that are not present in the
 major trust stores. It outputs a list of the SH256 digest. A handful of
 CAs are "grandfathered" in, and are not output.
 
-## make-deleted-page
+## make-deleted-page [-all]
 
 Createa a stand-alone `deleted-certs.html` page that lists the certs we
 should remove, in a format similar to `make-page`.
