@@ -4,5 +4,4 @@ certs.*
 global_server.xml
 trust_stores_as_pem
 trust_stores_as_pem.tar.gz
-cps-engine-api
 akamai-certificate-store.md

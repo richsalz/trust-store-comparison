@@ -38,9 +38,9 @@ foreach my $DIR ( 'certs.akamai' ) {
 
 my @deleted = grep {
     ! -f "certs.apple/$_"
-    || ! -f "certs.google/$_"
-    || ! -f "certs.microsoft/$_"
-    || ! -f "certs.mozilla/$_" } sort keys %certfiles;
+	or ! -f "certs.google/$_"
+	or ! -f "certs.microsoft/$_"
+	or ! -f "certs.mozilla/$_" } sort keys %certfiles;
 
 foreach my $FILE ( @deleted ) {
     print "$FILE\n";

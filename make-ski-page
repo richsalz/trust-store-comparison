@@ -59,12 +59,9 @@ print <<EOF;
     <a href="https://git.source.akamai.com/users/rsalz/repos/trust-store-comparison/browse">https://git.source.akamai.com/users/rsalz/repos/trust-store-comparison/browse</a>.
     </p>
     <ul>
-      <li>aka-cps - The "permissive set" from CPS-ENGINE</li>
-      <li>aka-gs - All certs in global-server.xml not in a set</li>
       <li>akamai - The "permissive set"</li>
       <li>apple - Apple's trust store</li>
-      <li>google - from the Android Open Source Project</li>
-      <li>gtrust - the new (2021) Chrome trust store</li>
+      <li>chrome - the Chrome trust store</li>
       <li>microsoft - Microsoft's trust store</li>
       <li>mozilla - Firefox's trust store</li>
     </ul>

@@ -4,7 +4,6 @@ test -z "$LSG" && LSG="lsg-gss3.netmgmt.akamai.com"
 GLOBAL_SERVER="/a/tools/metadata/ghostdir.ca.list/global_server.xml"
 STORE_AS_PEM_TGZ="https://nabla-c0d3.github.io/trust_stores_observatory/trust_stores_as_pem.tar.gz"
 CHROME_ROOTS_TGZ="https://chromium.googlesource.com/chromium/src/+archive/main/net/data/ssl/chrome_root_store.tar.gz"
-CPS_GIT_SRC="ssh://git@git.source.akamai.com:7999/sources/cps-engine-api.git"
 
 redigest() {
     sha=$(openssl x509 -fingerprint -sha256 -noout -in $1)
@@ -12,32 +11,6 @@ redigest() {
     openssl x509 -text -in $1 >$sha
     rm $1
 }
-
-# Get the CPS repository
-if ! test -d cps-engine-api ; then
-    echo "Cloning cps-engine-api repository"
-    git clone -q $CPS_GIT_SRC
-else
-    echo "Updating cps-engine-api repository"
-    cd "cps-engine-api"
-    git pull -q
-    cd ..
-fi
-CPSXML="cps-engine-api/cps-engine/config/global_server.xml"
-if ! test -f $CPSXML ; then
-    echo File does not exist: $CPSXML
-    exit 1
-fi
-
-rm -rf certs.aka-cps
-mkdir certs.aka-cps
-cd certs.aka-cps
-../split-permissive ../$CPSXML
-for CERT in * ; do
-    redigest $CERT
-done
-echo CPS has $(ls | wc -l)
-cd ..
 
 # Write out akamai-permissive set
 if ! scp -pq ${LSG}:${GLOBAL_SERVER} . ; then
@@ -54,17 +27,6 @@ done
 echo Permissive-set has $(ls | wc -l)
 cd ..
 
-# Write out all CAs in global-server file
-rm -rf certs.aka-gs
-mkdir certs.aka-gs
-cd certs.aka-gs
-../split-gs ../global_server.xml
-for CERT in * ; do
-    redigest $CERT
-done
-echo Global-server has $(ls | wc -l)
-cd ..
-
 rm -rf trust_stores_as_pem*
 curl --silent --show-error --remote-name $STORE_AS_PEM_TGZ
 mkdir trust_stores_as_pem
@@ -72,7 +34,7 @@ cd trust_stores_as_pem
 tar zxf ../trust_stores_as_pem.tar.gz
 cd ..
 
-for WHO in apple google microsoft mozilla ; do
+for WHO in apple microsoft mozilla ; do
     rm -rf certs.$WHO
     mkdir certs.$WHO
     cd certs.$WHO
@@ -86,10 +48,10 @@ done
 
 
 # Scrape the Chrome root store.
-rm -rf certs.gtrust
-mkdir certs.gtrust
+rm -rf certs.google
+mkdir certs.google
 curl --output - --location --silent --show-error $CHROME_ROOTS_TGZ | tar zxf - root_store.certs
-cd certs.gtrust
+cd certs.google
 ../split-pem <../root_store.certs
 for CERT in * ; do
     redigest $CERT

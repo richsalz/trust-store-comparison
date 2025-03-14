@@ -48,7 +48,7 @@ Generates an HTML page called `dup-ski.html` (with links to show the certs)
 of certificates that have dupplicate Subject Key Identifier. Prettier output
 than `check-ski`
 
-## akamai-missing
+## list-missing
 
 A list of what Akamai permissive-set is missing that the all the other
 trust stores have. It outputs a list of the SHA256 digests, which isn't
@@ -56,7 +56,7 @@ friendly, but you can do things like this, to see
 which certs we're missing that Apple trusts:
 
 ```
-for F in $(cat ./akamai-missing) ; do
+for F in $(cat ./list-missing) ; do
     cat certs.apple/$F
 done
 ```
@@ -68,7 +68,7 @@ Note that will generate a LOT of output
 Create stand-alone `missing-certs.html` that lists what certs are missing,
 in a format similar to `make-page`.
 
-## akamai-deleted [-all]
+## list-deleted [-all]
 
 A list of certs in the Akamai permissive-set that are not present in the
 major trust stores. It outputs a list of the SH256 digest. A handful of
