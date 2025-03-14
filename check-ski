@@ -25,7 +25,6 @@ get_ski()
 
 # Loop over all cert directories, scanning every file in each dir
 foreach my $dir ( <certs.*> ) {
-    print "# $dir\n";
     chdir $dir || die "Can't chdir $dir, $!";
 
     my %seen = ();
@@ -33,7 +32,7 @@ foreach my $dir ( <certs.*> ) {
 	my $ski = &get_ski($file);
 	next if not defined $ski;
 	if ( defined $seen{$ski} ) {
-	    print "Duplicate\n  " . $seen{$ski} . "\n  $dir/$file\n\n";
+	    print "# Duplicate\n  " . $seen{$ski} . "\n  $dir/$file\n\n";
 	} else {
 	    $seen{$ski} = "$dir/$file";
 	}

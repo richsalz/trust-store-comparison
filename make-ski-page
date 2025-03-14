@@ -50,11 +50,11 @@ print <<EOF;
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Duplicate keys</title>
+    <title>Duplicate Key Identifiers</title>
   </head>
 
   <body>
-    <h1>Duplicate keys</h1>
+    <h1>Duplicate Key Identifiers</h1>
     <p>This page generated at $NOW from scripts at
     <a href="https://git.source.akamai.com/users/rsalz/repos/trust-store-comparison/browse">https://git.source.akamai.com/users/rsalz/repos/trust-store-comparison/browse</a>.
     </p>
@@ -87,9 +87,9 @@ foreach my $dir ( <certs.*> ) {
 	if ( defined $match ) {
 	    $clean = 0;
 	    my $link = "<a target='_blank' href='${CRTSH}${file}'>";
-	    print "    <li>\n    ${link}$file</a><br>\n";
+	    print "    <li>\n    ${link}<tt>$file</tt></a><br>\n";
 	    $link = "<a target='_blank' href='${CRTSH}${match}'>";
-	    print "      ${link}$match</a><br>\n";
+	    print "      ${link}<tt>$match</tt></a><br>\n";
 	    print "<p>&nbsp;</p></li>\n\n";
 	} else {
 	    $seen{$ski} = $file;
