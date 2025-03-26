@@ -41,40 +41,8 @@ exists, it will copy the file over, check it in, and push it to GitHub.
 A script to check all the certs, in each directory, and see if there
 are any that share the same Subject Key Identifier
 
-
 ## make-ski-page
 
 Generates an HTML page called `dup-ski.html` (with links to show the certs)
 of certificates that have dupplicate Subject Key Identifier. Prettier output
 than `check-ski`
-
-## list-missing
-
-A list of what Akamai permissive-set is missing that the all the other
-trust stores have. It outputs a list of the SHA256 digests, which isn't
-friendly, but you can do things like this, to see
-which certs we're missing that Apple trusts:
-
-```
-for F in $(cat ./list-missing) ; do
-    cat certs.apple/$F
-done
-```
-
-Note that will generate a LOT of output
-
-## make-missing-page
-
-Create stand-alone `missing-certs.html` that lists what certs are missing,
-in a format similar to `make-page`.
-
-## list-deleted [-all]
-
-A list of certs in the Akamai permissive-set that are not present in the
-major trust stores. It outputs a list of the SH256 digest. A handful of
-CAs are "grandfathered" in, and are not output.
-
-## make-deleted-page [-all]
-
-Createa a stand-alone `deleted-certs.html` page that lists the certs we
-should remove, in a format similar to `make-page`.
