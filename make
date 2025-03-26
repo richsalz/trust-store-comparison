@@ -45,11 +45,11 @@ my $PRESENT = "<td width=\"$CW\" bgcolor=\"green\">Y</td>";
 my $NOTPRESENT = "<td width=\"$CW\" bgcolor=\"grey\">-</td>";
 
 # Entries for various special status values.
-my $MISSING = "&nbsp;&nbsp;<B>missing</B>";
-my $LEGACY = "&nbsp;&nbsp;<B>grandfathered</B>";
-my $WRONG = "&nbsp;&nbsp;<B>incorrect</B>";
+my $MISSING = "&nbsp;&nbsp;<EM>missing</EM>";
+my $LEGACY = "&nbsp;&nbsp;<EM>grandfathered</EM>";
+my $WRONG = "&nbsp;&nbsp;<EM>wrong</EM>";
 
-# List of certs that out of policy, but grandfathered.
+# List of certs that are out of policy, but grandfathered.
 my %grandfathered = (
     '0C2CD63DF7806FA399EDE809116B575BF87989F06518F9808C860503178BAF66' => 1,
     '2399561127A57125DE8CEFEA610DDF2FA078B5C8067F4E828290BFB860E84B3C' => 1,
@@ -75,7 +75,7 @@ my %grandfathered = (
 # Get the certificate issuer from a file.
 my %cache = ();
 sub get_issuer {
-    my $file = pop;
+    my $file = "all/" . pop;
 
     return $cache{$file} if defined $cache{$file};
     open my $fh, '<', $file or die "Can't open $file to find issuer, $!";
@@ -105,10 +105,15 @@ foreach my $DIR ( <certs.*> ) {
     }
     chdir ".." ||die "Can't chdir $DIR/.., $!";
 }
+
 chdir 'all' or die "Can't chdir all, $!";
 my @all = <*>;
 chdir '..' || die "Can'tchdir up, $!";
 $counts{'all'} = scalar @all;
+
+foreach my $file ( keys %grandfathered ) {
+    $grandfathered{$file} = get_issuer($file);
+}
 
 # Make a list of our certs.
 chdir "certs.akamai" or die "Can't chdir certs.akamai, $!";
@@ -124,7 +129,7 @@ foreach my $cert (
 	&& -f "certs.microsoft/$_"
 	&& -f "certs.mozilla/$_"
 	&& ! -f "certs.akamai/$_" } @all ) {
-    $missing{$cert} = 1;
+    $missing{$cert} = get_issuer($cert);
 }
 
 # Make list of our certs that were don't follow policy.
@@ -135,7 +140,8 @@ foreach my $cert (
 	! -f "certs.google/$_" or
 	! -f "certs.microsoft/$_" or
 	! -f "certs.mozilla/$_" } @akamai ) {
-    $wrong{$cert} = 1 if not defined $grandfathered{$cert};
+    $wrong{$cert} = get_issuer($cert)
+			if not defined $grandfathered{$cert};
 }
 
 open my $FH, '>', 'unified.html' or die "Can't open output, $!";
@@ -190,8 +196,17 @@ print <<EOF;
       <tbody>
 EOF
 
+# Make a reverse lookup, issuer->file
+my @names;
+my %n2f = ();
 foreach my $FILE ( @all ) {
-    my $ISS =  get_issuer("all/$FILE");
+    my $iss = get_issuer($FILE);
+    push @names, $iss;
+    $n2f{$iss} = $FILE;
+}
+
+foreach my $ISS ( sort @names ) {
+    my $FILE = $n2f{$ISS};
     my $VAL;
     my $COUNT = 0;
     print "        <tr>\n";
@@ -219,42 +234,41 @@ print <<EOF;
 EOF
 
 sub format_line {
-    my $cert = pop;
-    my $iss = get_issuer("all/$cert");
+    my $cert = shift;
+    my $iss = shift;
     return "<li><a target=\"_blank\" href=\"${CRTSH}${cert}\">${iss}</a></br>\n";
+}
+sub format_list {
+    my $hash_ref = shift;
+    my %list = %{ $hash_ref };
+    my @names = values %list;
+
+    print "<p>Number of certs = ", scalar @names, "</p>\n";
+    print "<ul>\n";
+    foreach my $n ( sort @names ) {
+	print "<li>"
+	    . "<a target=\"_blank\" href=\"${CRTSH}$n2f{$n}\">${n}</a>"
+	    . "</br></li>\n";
+    }
+    print "</ul>\n";
 }
 
 print "<h2 id='missing'>Missing Summary</h2>\n";
-print "<p>Number of certs = ", scalar keys %missing, "</p>\n";
-print "<ul>\n";
-foreach my $cert ( sort keys %missing ) {
-    print format_line($cert);
-}
-print "</ul>\n";
+format_list(\%missing);
 
 print "<h2 id='grandfathered'>Grandfathered Summary</h2>\n";
-print "<p>Number of certs = ", scalar keys %grandfathered, "</p>\n";
-print "<ul>\n";
-foreach my $cert ( sort keys %grandfathered ) {
-    print format_line($cert);
-}
-print "</ul>\n";
+format_list(\%grandfathered);
 
 print "<h2 id='wrong'>Wrongly-added Summary</h2>\n";
-print "<p>Number of certs = ", scalar keys %wrong, "</p>\n";
-print "<ul>\n";
-foreach my $cert ( sort keys %wrong ) {
-    print format_line($cert);
-}
-print "</ul>\n";
+format_list(\%wrong);
 
 print <<EOF;
   </body>
 </html>
 EOF
 
-rmtree("all") or die "Can't rmdir all, $!"
-    if -d "all";
-
 select STDOUT;
 close $FH;
+
+rmtree("all") or die "Can't rmdir all, $!"
+    if -d "all";
