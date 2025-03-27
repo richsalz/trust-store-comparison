@@ -30,13 +30,11 @@ That page includes `jquery.min.js` and `jquery.tablesorter.min.js` to do the
 table/column cleverness.  Put all three files in the same directory and point
 your browser there.
 
+Also generates a public markdown file of our permissive set, and tries to
+update the file in the https://github.com/akamai/akamai-certificate-store
+repository.
+
 ## check-ski
 
 A script to check all the certs, in each directory, and see if there
 are any that share the same Subject Key Identifier
-
-## make-ski-page
-
-Generates an HTML page called `dup-ski.html` (with links to show the certs)
-of certificates that have dupplicate Subject Key Identifier. Prettier output
-than `check-ski`
