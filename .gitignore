@@ -5,3 +5,4 @@ global_server.xml
 trust_stores_as_pem
 trust_stores_as_pem.tar.gz
 akamai-certificate-store.md
+index.tar.gz

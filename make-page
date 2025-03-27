@@ -73,6 +73,8 @@ my %grandfathered = (
     'D947432ABDE7B7FA90FC2E6B59101B1280E0E1C7E4E40FA3C6887FFF57A7F4CF' => 1,
     'DB3517D1F6732A2D5AB97C533EC70779EE3270A62FB4AC4238372460E6F01E88' => 1,
     'EB04CF5EB1F39AFA762F2BB120F296CBA520C1B97DB1589565B81CB9A17B7244' => 1,
+    'BE6C4DA2BBB9BA59B6F3939768374246C3C005993FA98F020D1DEDBED48A81D5' => 1,
+    '568D6905A2C88708A4B3025190EDCFEDB1974A606A13C6E5290FCB2AE63EDAB5' => 1,
 );
 
 # Get the certificate issuer from a file.
@@ -245,8 +247,13 @@ sub format_list {
     my $hash_ref = shift;
     my %list = %{ $hash_ref };
     my @names = values %list;
+    my $count = scalar @names;
 
-    print "<p>Number of certs = ", scalar @names, "</p>\n";
+    if ( $count == 0 ) {
+	print "<p>None found.</p>\n";
+	return;
+    }
+    print "<p>Number of certs = $count</p>\n";
     print "<ul>\n";
     foreach my $n ( sort @names ) {
 	print "<li>"
