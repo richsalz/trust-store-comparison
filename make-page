@@ -3,11 +3,14 @@ use strict;
 use warnings;
 
 use File::Path qw( rmtree );
-use File::Slurp;
+use File::Compare;
+use File::Copy;
 
 my $now = `date`;
 my $link = "https://git.source.akamai.com/users/rsalz/repos/trust-store-comparison/browse";
 my $CRTSH = "https://crt.sh?q=";
+my $md = "akamai-certificate-store.md";
+my $repo = 'akamai-certificate-store';
 
 # HTTP <head> field for sortable tables.
 my $head = <<EOF;
@@ -144,7 +147,7 @@ foreach my $cert (
 			if not defined $grandfathered{$cert};
 }
 
-open my $FH, '>', 'unified.html' or die "Can't open output, $!";
+open my $FH, '>', 'index.html' or die "Can't open output, $!";
 select $FH;
 
 print <<EOF;
@@ -270,5 +273,48 @@ EOF
 select STDOUT;
 close $FH;
 
+
+open $FH, '>', $md or die "Can't open output, $!";
+select $FH;
+
+my $count = scalar @akamai;
+print <<EOF;
+# Akamai's Certificate Store
+
+There are $count entries. Links below point to the full certificate
+on https://cert.sh
+
+EOF
+
+my @trusted;
+foreach my $file ( @akamai ) {
+    push @trusted, get_issuer($file);
+}
+
+foreach my $n ( sort @trusted ) {
+    my $file = "all/" . $n2f{$n};
+    my $lines = `openssl x509 -noout -fingerprint -serial -enddate -in $file`;
+    $lines =~ s/SHA1 Fingerprint=/  - Fingerprint /;
+    $lines =~ s/serial=/  - Serial: /;
+    $lines =~ s/notAfter=/  - Expires: /;
+    my $link = "${CRTSH}" . $n2f{$n};
+    print "- Name: [$n]($link)\n$lines\n";
+}
+
+select STDOUT;
+close $FH;
+
 rmtree("all") or die "Can't rmdir all, $!"
     if -d "all";
+
+die "../$repo does not exist -- update manually"
+    if ! -d "../$repo";
+
+if ( compare($md, "../$repo/$md") == 0 ) {
+    print "No change\n";
+} else {
+    copy($md, "../$repo/$md") or die "Can't copy $md, $!";
+    chdir "../$repo" or die "Can't chdir $repo, $!";
+    `git commit -m "Automatic update" $md`;
+    `git push`;
+}
