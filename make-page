@@ -289,7 +289,7 @@ print <<EOF;
 # Akamai's Certificate Store
 
 There are $count entries. Links below point to the full certificate
-on https://cert.sh
+on https://crt.sh
 
 EOF
 
