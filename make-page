@@ -318,7 +318,7 @@ die "../$repo does not exist -- update manually"
     if ! -d "../$repo";
 
 if ( compare($md, "../$repo/$md") == 0 ) {
-    print "No change\n";
+    print "No change to GitHub copy\n";
 } else {
     copy($md, "../$repo/$md") or die "Can't copy $md, $!";
     chdir "../$repo" or die "Can't chdir $repo, $!";
