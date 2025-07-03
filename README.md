@@ -38,3 +38,7 @@ repository.
 
 A script to check all the certs, in each directory, and see if there
 are any that share the same Subject Key Identifier
+
+## find-lone-certs
+
+Lists any certs in `global_server.xml` that are not in any set.

@@ -1,0 +1,62 @@
+#! /usr/bin/env python3
+"""
+./find-lone-certs file...
+
+Read files, find contents of find all server (CA) names that are
+not a member of any server-set.
+"""
+
+import sys
+from xml.dom.minidom import parse as xmlparse
+
+certnames = dict()
+
+def kids(node, nodetype):
+    """Return all child nodes that are of the specified type."""
+    return [n for n in node.childNodes if n.nodeType == nodetype]
+
+def get_lines(n):
+    '''Glue all the text children of |n| together, strip leading and
+    trailing whitespace, return a single text string.'''
+    text = "".join([tn.wholeText for tn in kids(n, n.TEXT_NODE)])
+    return [str(l).lstrip() for l in text.split("\n")]
+
+def parse(fname):
+    """Read |fname|, store all the certificates, and explode the contents
+    of the akamai-permissive set."""
+
+    # Walk the tree, want /configs/edge-config/security:calist (xpath)
+    dom = xmlparse(open(fname))
+    c = dom.getElementsByTagName(u"configs")
+    if len(c) != 1:
+        raise SystemError("Wrong root element (not configs)")
+    c = c[0].getElementsByTagName(u"edge-config")
+    if len(c) != 1:
+        raise SystemError("Wrong child element (not edge-config)")
+
+    # Walk over all calist nodes
+    for calist in c[0].getElementsByTagName(u"security:calist"):
+        for n in kids(calist, c[0].ELEMENT_NODE):
+            if n.tagName == u"server":
+                name = n.getAttribute("name")
+                certnames[name] = 0;
+            elif n.tagName == u"server-set" or n.tagName == "server-set":
+                name = n.getAttribute("name")
+                for line in get_lines(n):
+                    i = line.find("/")
+                    if i > -1:
+                        setname = line[i + 1:]
+                        certnames[setname] += 1
+            else:
+                print("Skipping ",n.tagName);
+
+
+# Parse files. Should probably hardwire global_server.xml here
+for fname in sys.argv[1:]:
+    parse(fname)
+
+# Print sorted list of CA certs that are not mentioned in any server-set
+nowhere = [ k for k in certnames.keys() if certnames[k] == 0 ]
+nowhere.sort()
+for ca in nowhere:
+    print(ca)
