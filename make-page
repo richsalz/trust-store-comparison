@@ -10,7 +10,7 @@ my $now = `date`;
 my $link = "https://git.source.akamai.com/users/rsalz/repos/trust-store-comparison/browse";
 my $CRTSH = "https://crt.sh?q=";
 my $md = "akamai-certificate-store.md";
-my $repo = 'akamai-certificate-store';
+my $repo = '../akamai-certificate-store';
 
 # HTTP <head> field for sortable tables.
 my $head = <<EOF;
@@ -314,14 +314,14 @@ close $FH;
 rmtree("all") or die "Can't rmdir all, $!"
     if -d "all";
 
-die "../$repo does not exist -- update manually"
-    if ! -d "../$repo";
+die "$repo does not exist -- update manually"
+    if ! -d "$repo";
 
-if ( compare($md, "../$repo/$md") == 0 ) {
+if ( compare($md, "$repo/$md") == 0 ) {
     print "No change to GitHub copy\n";
 } else {
-    copy($md, "../$repo/$md") or die "Can't copy $md, $!";
-    chdir "../$repo" or die "Can't chdir $repo, $!";
+    copy($md, "$repo/$md") or die "Can't copy $md, $!";
+    chdir "$repo" or die "Can't chdir $repo, $!";
     `git commit -m "Automatic update" $md`;
     `git push`;
 }
