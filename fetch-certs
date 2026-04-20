@@ -28,7 +28,7 @@ echo Permissive-set has $(ls | wc -l)
 cd ..
 
 rm -rf trust_stores_as_pem*
-curl --silent --show-error --remote-name $STORE_AS_PEM_TGZ
+curl --location --silent --show-error --remote-name $STORE_AS_PEM_TGZ
 mkdir trust_stores_as_pem
 cd trust_stores_as_pem
 tar zxf ../trust_stores_as_pem.tar.gz
