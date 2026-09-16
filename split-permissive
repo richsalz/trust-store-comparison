@@ -31,6 +31,8 @@ def writeout(n):
         # Write cert to file
         sha = m[4:s].lower()
         sha = sha[1:]
+        if sha not in certsbysha:
+            raise SystemError("Reference to unknown digest " + sha)
         open(sha.replace(":", ""), "w").write(certsbysha[sha])
 
 def parse(fname):
@@ -69,7 +71,10 @@ def parse(fname):
             slash = sha1.find("/")
             if slash != -1:
                 sha1 = sha1[:slash]
-            certsbysha[sha1.lower()] = cert
+            sha1 = sha1.lower()
+            if sha1 in certsbysha:
+                raise SystemError("SHA collision " + sha1)
+            certsbysha[sha1] = cert
 
 for fname in sys.argv[1:]:
     parse(fname)
