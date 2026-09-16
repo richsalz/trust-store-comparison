@@ -1,4 +1,5 @@
 certs.*
+all
 *.html
 .*.swp
 global_server.xml

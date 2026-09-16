@@ -79,14 +79,15 @@ my %grandfathered = (
 # Get the certificate issuer from a file.
 my %cache = ();
 sub get_issuer {
-    my $file = "all/" . pop;
+    my $hash = pop;
+    my $file = "all/" . $hash;
 
     return $cache{$file} if defined $cache{$file};
     open my $fh, '<', $file or die "Can't open $file to find issuer, $!";
     while ( <$fh> ) {
 	next unless s/.*Issuer: (.*)/$1/;
 	close $fh;
-	return $cache{$file} = $1;
+	return $cache{$file} = $1 . ' [' . substr($hash, 0, 4) . '...]';
     }
     close $fh;
     return $file;
@@ -310,8 +311,8 @@ foreach my $n ( sort @trusted ) {
 select STDOUT;
 close $FH;
 
-rmtree("all") or die "Can't rmdir all, $!"
-    if -d "all";
+#rmtree("all") or die "Can't rmdir all, $!"
+#    if -d "all";
 
 die "$repo does not exist -- update manually"
     if ! -d "$repo";
