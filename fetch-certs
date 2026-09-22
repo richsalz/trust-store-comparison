@@ -16,7 +16,7 @@ redigest() {
     rm $1
 }
 
-# Write out akamai-permissive set
+# Write out akamai global trust store set
 if ! scp -pq ${LSG}:${GLOBAL_SERVER} . ; then
     echo 'ERROR: failed to fetch global_server.xml.'
     exit 1
@@ -24,11 +24,11 @@ fi
 rm -rf certs.akamai
 mkdir certs.akamai
 cd certs.akamai
-../split-permissive ../global_server.xml
+../split-akamai ../global_server.xml
 for CERT in * ; do
     redigest $CERT
 done
-echo Permissive-set has $(ls | wc -l)
+echo akamai has $(ls | wc -l)
 cd ..
 
 rm -rf trust_stores_as_pem*
