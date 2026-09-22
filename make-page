@@ -182,9 +182,9 @@ print <<EOF;
     <p>Click on a column header to sort by that column.
     Double-Click to reverse-sort. Column headings:</p>
     <ul>
-      <li>akamai - Our global trust store</li>
+      <li>akamai - Akamai's global trust store</li>
       <li>apple - Apple's trust store</li>
-      <li>google - the Chrome trust store</li>
+      <li>google - Google's Chrome trust store</li>
       <li>microsoft - Microsoft's trust store</li>
       <li>mozilla - Firefox's trust store</li>
     </ul>

@@ -51,7 +51,7 @@ for WHO in apple microsoft mozilla ; do
 done
 
 
-# Scrape the Chrome root store.
+# Scrape Google's Chrome trust store.
 rm -rf certs.google
 mkdir certs.google
 curl --output - --location --silent --show-error $CHROME_ROOTS_TGZ | tar zxf - root_store.certs
@@ -60,6 +60,6 @@ cd certs.google
 for CERT in * ; do
     redigest $CERT
 done
-echo Chrome root store has $(ls | wc -l)
+echo google has $(ls | wc -l)
 cd ..
 rm root_store.certs
