@@ -3,6 +3,7 @@ all
 *.html
 .*.swp
 global_server.xml
+google.tar.gz
 trust_stores_as_pem
 trust_stores_as_pem.tar.gz
 akamai-certificate-store.md

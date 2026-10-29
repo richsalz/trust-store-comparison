@@ -54,7 +54,8 @@ done
 # Scrape Google's Chrome trust store.
 rm -rf certs.google
 mkdir certs.google
-curl --output - --location --silent --show-error $CHROME_ROOTS_TGZ | tar zxf - root_store.certs
+curl --output - --location --silent --show-error $CHROME_ROOTS_TGZ > google.tar.gz
+tar zxf google.tar.gz root_store.certs
 cd certs.google
 ../split-pem <../root_store.certs
 for CERT in * ; do
